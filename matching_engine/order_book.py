@@ -1,5 +1,6 @@
 from .order import MarketOrder, LimitOrder
 
+from bisect import insort
 from typing import Union
 from collections import defaultdict
 
@@ -42,13 +43,11 @@ class OrderBook:
             Order (Union[MarketOrder, LimitOrder]): The order to be added.
         """
         if isinstance(order, MarketOrder):
-            self.bid_market_orders.append(order)
-            self.bid_market_orders.sort(key = lambda order : order.time)
+            insort(a = self.bid_market_orders, x = order, key = lambda order : order.time)
             return
         
         if isinstance(order, LimitOrder):
-            self.bid_limit_orders.append(order)
-            self.bid_limit_orders.sort(key = lambda order : (-order.price, order.time))
+            insort(a = self.bid_limit_orders, x = order, key = lambda order : (-order.price, order.time))
 
     def add_ask_order(self, order : Union[MarketOrder, LimitOrder]):
         """
@@ -58,10 +57,8 @@ class OrderBook:
             Order (Union[MarketOrder, LimitOrder]): The order to be added.
         """
         if isinstance(order, MarketOrder):
-            self.ask_market_orders.append(order)
-            self.ask_market_orders.sort(key = lambda order : order.time)
+            insort(a = self.ask_market_orders, x = order, key = lambda order : order.time)
             return
         
         if isinstance(order, LimitOrder):
-            self.ask_limit_orders.append(order)
-            self.ask_limit_orders.sort(key = lambda order : (order.price, order.time))
+            insort(a = self.ask_limit_orders, x = order, key = lambda order : (order.price, order.time))
